@@ -333,7 +333,7 @@ unbound$(EXEEXT):	$(DAEMON_OBJ_LINK) libunbound.la
 	$(LINK) -o $@ $(DAEMON_OBJ_LINK) $(EXTRALINK) $(SSLLIB) $(LIBS)
 
 fuzztest$(EXEEXT):	$(FUZZTEST_OBJ_LINK) libunbound.la
-	$(LINK) -o $@ $(FUZZTEST_OBJ_LINK) $(EXTRALINK) $(SSLLIB) $(LIBS)
+	$(LINK) -fsanitize=fuzzer -o $@ $(FUZZTEST_OBJ_LINK) $(EXTRALINK) $(SSLLIB) $(LIBS)
 
 unbound-checkconf$(EXEEXT):	$(CHECKCONF_OBJ_LINK) libunbound.la
 	$(LINK) -o $@ $(CHECKCONF_OBJ_LINK) $(EXTRALINK) $(SSLLIB) $(LIBS)
