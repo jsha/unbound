@@ -32,6 +32,3 @@ int LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len)
 		return 1;
 	}
 }
-
-int main() {
-}
