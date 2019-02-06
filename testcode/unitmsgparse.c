@@ -456,6 +456,13 @@ testfromfile(sldns_buffer* pkt, struct alloc_cache* alloc, sldns_buffer* out,
 			printf("test no %d: %s", no, buf);
 			fflush(stdout);
 		}
+		hex_to_buf(pkt, buf);
+		char outfname[1000];
+		sprintf(outfname, "%s.%d.bin", fname, no);
+		FILE* f = fopen(outfname, "w");
+		fwrite(pkt, 1, sldns_buffer_limit(pkt), f);
+		fclose(f);
+
 		testpkt(pkt, alloc, out, buf);
 		no++;
 	}

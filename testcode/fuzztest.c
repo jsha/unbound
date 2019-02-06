@@ -1,7 +1,3 @@
-/*
- * unbound-fuzzme.c - parse a packet provided on stdin (for fuzzing).
- *
- */
 #include "config.h"
 #include "util/regional.h"
 #include "util/fptr_wlist.h"
@@ -9,15 +5,15 @@
 
 #define SZ 10000
 
-int main() {
-	char buffer[SZ];
-	size_t n_read = fread(buffer, 1, SZ, stdin);
-	if (n_read == SZ) {
-		printf("input too big\n");
-		return 1;
-	}
-	sldns_buffer *pkt = sldns_buffer_new(n_read);
-	sldns_buffer_init_frm_data(pkt, buffer, n_read);
+int FuzzerInitialize(int *argc, char ***argv)
+{
+	return 1;
+}
+
+int FuzzerTestOneInput(const uint8_t *buf, size_t len)
+{
+	sldns_buffer *pkt = sldns_buffer_new(len);
+	sldns_buffer_init_frm_data(pkt, (void*)buf, len);
 
 	struct regional *region = regional_create();
 
@@ -35,4 +31,7 @@ int main() {
 		printf("parse error\n");
 		return 1;
 	}
+}
+
+int main() {
 }
