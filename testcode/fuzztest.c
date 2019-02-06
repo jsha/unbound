@@ -5,7 +5,7 @@
 
 #define SZ 10000
 
-int FuzzerInitialize(int *argc, char ***argv)
+int LLVMFuzzerInitialize(int *argc, char ***argv)
 {
 	return 1;
 }
@@ -32,3 +32,20 @@ int LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len)
 		return 1;
 	}
 }
+
+#define BUF_SIZE 65536
+int main(int argc, char** argv)
+{
+    LLVMFuzzerInitialize(&argc, &argv);
+
+    while (__AFL_LOOP(10000)) {
+        uint8_t *buf = malloc(BUF_SIZE);
+        size_t size = read(0, buf, BUF_SIZE);
+
+        LLVMFuzzerTestOneInput(buf, size);
+        free(buf);
+    }
+
+    return 0;
+}
+
