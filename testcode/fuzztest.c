@@ -10,7 +10,7 @@ int FuzzerInitialize(int *argc, char ***argv)
 	return 1;
 }
 
-int FuzzerTestOneInput(const uint8_t *buf, size_t len)
+int LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len)
 {
 	sldns_buffer *pkt = sldns_buffer_new(len);
 	sldns_buffer_init_frm_data(pkt, (void*)buf, len);
