@@ -873,7 +873,7 @@ int mesh_add_sub(struct module_qstate* qstate, struct query_info* qinfo,
 	*sub = mesh_area_find(mesh, NULL, qinfo, qflags,
 		prime, valrec);
 	if(mesh_detect_cycle_found(qstate, *sub)) {
-		verbose(VERB_ALGO, "attach failed, cycle detected");
+		log_err("attach failed, cycle detected");
 		return 0;
 	}
 	if(!*sub) {
