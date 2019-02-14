@@ -402,7 +402,7 @@ generate_request(struct module_qstate* qstate, int id, uint8_t* name,
 			qstate->env->add_sub));
 		if(!(*qstate->env->add_sub)(qstate, &ask, 
 			(uint16_t)(BIT_RD|flags), 0, valrec, newq, &sub)){
-			log_err("Could not generate request: out of memory");
+			log_err("Could not add a subquery.");
 			return 0;
 		}
 	}
@@ -411,7 +411,7 @@ generate_request(struct module_qstate* qstate, int id, uint8_t* name,
 			qstate->env->attach_sub));
 		if(!(*qstate->env->attach_sub)(qstate, &ask, 
 			(uint16_t)(BIT_RD|flags), 0, valrec, newq)){
-			log_err("Could not generate request: out of memory");
+			log_err("Could not attach a subquery.");
 			return 0;
 		}
 	}
