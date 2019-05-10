@@ -207,6 +207,9 @@ $(SLDNS_OBJ)
 PETAL_SRC=testcode/petal.c
 PETAL_OBJ=petal.lo
 PETAL_OBJ_LINK=$(PETAL_OBJ) $(COMPAT_OBJ_WITHOUT_CTIMEARC4)
+PARSE_PACKET_FUZZER_SRC=testcode/parse_packet_fuzzer.c testcode/parse_packet_fuzzer_main.c
+PARSE_PACKET_FUZZER_OBJ=parse_packet_fuzzer.lo parse_packet_fuzzer_main.lo
+PARSE_PACKET_FUZZER_OBJ_LINK=$(PARSE_PACKET_FUZZER_OBJ) $(COMPAT_OBJ_WITHOUT_CTIMEARC4)
 PKTVIEW_SRC=testcode/pktview.c testcode/readhex.c
 PKTVIEW_OBJ=pktview.lo
 PKTVIEW_OBJ_LINK=$(PKTVIEW_OBJ) worker_cb.lo readhex.lo $(COMMON_OBJ) \
@@ -263,7 +266,7 @@ ALL_OBJ=$(COMMON_OBJ) $(UNITTEST_OBJ) $(DAEMON_OBJ) \
 	$(MEMSTATS_OBJ) $(CHECKCONF_OBJ) $(LIBUNBOUND_OBJ) $(HOST_OBJ) \
 	$(ASYNCLOOK_OBJ) $(STREAMTCP_OBJ) $(PERF_OBJ) $(DELAYER_OBJ) \
 	$(CONTROL_OBJ) $(UBANCHOR_OBJ) $(PETAL_OBJ) \
-	$(COMPAT_OBJ) $(PYUNBOUND_OBJ) \
+	$(COMPAT_OBJ) $(PYUNBOUND_OBJ) $(PARSE_PACKET_FUZZER_OBJ) \
 	$(SVCINST_OBJ) $(SVCUNINST_OBJ) $(ANCHORUPD_OBJ) $(SLDNS_OBJ)
 
 COMPILE=$(LIBTOOL) --tag=CC --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) @PTHREAD_CFLAGS_ONLY@
@@ -301,7 +304,7 @@ rsrc_unbound_checkconf.o:	$(srcdir)/winrc/rsrc_unbound_checkconf.rc config.h
 TEST_BIN=asynclook$(EXEEXT) delayer$(EXEEXT) \
 	lock-verify$(EXEEXT) memstats$(EXEEXT) perf$(EXEEXT) \
 	petal$(EXEEXT) pktview$(EXEEXT) streamtcp$(EXEEXT) \
-	testbound$(EXEEXT) unittest$(EXEEXT)
+	testbound$(EXEEXT) unittest$(EXEEXT) parse_packet_fuzzer$(EXEEXT)
 tests:	all $(TEST_BIN)
 
 check: test
@@ -348,6 +351,9 @@ anchor-update$(EXEEXT):  $(ANCHORUPD_OBJ_LINK) libunbound.la
 
 unittest$(EXEEXT):	$(UNITTEST_OBJ_LINK)
 	$(LINK) -o $@ $(UNITTEST_OBJ_LINK) $(SSLLIB) $(LIBS)
+
+parse_packet_fuzzer$(EXEEXT):	$(PARSE_PACKET_FUZZER_OBJ_LINK)
+	$(LINK) -o $@ $(PARSE_PACKET_FUZZER_OBJ_LINK) $(SSLLIB) $(LIBS)
 
 testbound$(EXEEXT):	$(TESTBOUND_OBJ_LINK)
 	$(LINK) -o $@ $(TESTBOUND_OBJ_LINK) $(SSLLIB) $(LIBS)
@@ -1114,6 +1120,8 @@ testpkts.lo testpkts.o: $(srcdir)/testcode/testpkts.c config.h $(srcdir)/testcod
 unitldns.lo unitldns.o: $(srcdir)/testcode/unitldns.c config.h $(srcdir)/util/log.h $(srcdir)/testcode/unitmain.h \
  $(srcdir)/sldns/sbuffer.h $(srcdir)/sldns/str2wire.h $(srcdir)/sldns/rrdef.h $(srcdir)/sldns/wire2str.h
 unitecs.lo unitecs.o: $(srcdir)/testcode/unitecs.c config.h
+parse_packet_fuzzer.lo parse_packet_fuzzer.o: $(srcdir)/testcode/parse_packet_fuzzer.c
+parse_packet_fuzzer_main.lo parse_packet_fuzzer_main.o: $(srcdir)/testcode/parse_packet_fuzzer_main.c
 unitauth.lo unitauth.o: $(srcdir)/testcode/unitauth.c config.h $(srcdir)/services/authzone.h \
  $(srcdir)/util/rbtree.h $(srcdir)/util/locks.h $(srcdir)/util/log.h $(srcdir)/services/mesh.h $(srcdir)/util/netevent.h \
  $(srcdir)/dnscrypt/dnscrypt.h  $(srcdir)/util/data/msgparse.h \
