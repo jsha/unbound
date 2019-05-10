@@ -208,8 +208,13 @@ PETAL_SRC=testcode/petal.c
 PETAL_OBJ=petal.lo
 PETAL_OBJ_LINK=$(PETAL_OBJ) $(COMPAT_OBJ_WITHOUT_CTIMEARC4)
 PARSE_PACKET_FUZZER_SRC=testcode/parse_packet_fuzzer.c testcode/parse_packet_fuzzer_main.c
-PARSE_PACKET_FUZZER_OBJ=parse_packet_fuzzer.lo parse_packet_fuzzer_main.lo
-PARSE_PACKET_FUZZER_OBJ_LINK=$(PARSE_PACKET_FUZZER_OBJ) $(COMPAT_OBJ_WITHOUT_CTIMEARC4)
+PARSE_PACKET_FUZZER_OBJ=parse_packet_fuzzer.lo
+PARSE_PACKET_FUZZER_OBJ_LINK=$(PARSE_PACKET_FUZZER_OBJ) \
+	$(COMMON_OBJ) $(SLDNS_OBJ) $(COMPAT_OBJ)
+# When building as part of regular unbound tests, we set this to a
+# simple main. When running as part of oss-fuzz this will be overridden
+# with -lFuzzingEngine, which provides its own main.
+PARSE_PACKET_FUZZER_MAIN=parse_packet_fuzzer_main.lo
 PKTVIEW_SRC=testcode/pktview.c testcode/readhex.c
 PKTVIEW_OBJ=pktview.lo
 PKTVIEW_OBJ_LINK=$(PKTVIEW_OBJ) worker_cb.lo readhex.lo $(COMMON_OBJ) \
@@ -267,6 +272,7 @@ ALL_OBJ=$(COMMON_OBJ) $(UNITTEST_OBJ) $(DAEMON_OBJ) \
 	$(ASYNCLOOK_OBJ) $(STREAMTCP_OBJ) $(PERF_OBJ) $(DELAYER_OBJ) \
 	$(CONTROL_OBJ) $(UBANCHOR_OBJ) $(PETAL_OBJ) \
 	$(COMPAT_OBJ) $(PYUNBOUND_OBJ) $(PARSE_PACKET_FUZZER_OBJ) \
+	parse_packet_fuzzer_main.lo \
 	$(SVCINST_OBJ) $(SVCUNINST_OBJ) $(ANCHORUPD_OBJ) $(SLDNS_OBJ)
 
 COMPILE=$(LIBTOOL) --tag=CC --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) @PTHREAD_CFLAGS_ONLY@
@@ -353,7 +359,7 @@ unittest$(EXEEXT):	$(UNITTEST_OBJ_LINK)
 	$(LINK) -o $@ $(UNITTEST_OBJ_LINK) $(SSLLIB) $(LIBS)
 
 parse_packet_fuzzer$(EXEEXT):	$(PARSE_PACKET_FUZZER_OBJ_LINK)
-	$(LINK) -o $@ $(PARSE_PACKET_FUZZER_OBJ_LINK) $(SSLLIB) $(LIBS)
+	$(LINK) -o $@ $(PARSE_PACKET_FUZZER_OBJ_LINK) $(SSLLIB) $(LIBS) $(PARSE_PACKET_FUZZER_MAIN)
 
 testbound$(EXEEXT):	$(TESTBOUND_OBJ_LINK)
 	$(LINK) -o $@ $(TESTBOUND_OBJ_LINK) $(SSLLIB) $(LIBS)
